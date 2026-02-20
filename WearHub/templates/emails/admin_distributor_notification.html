@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>New Distributor Registration</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #3498db; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .details { background: white; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .button { display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>New Distributor Registration</h1>
+    </div>
+    <div class="content">
+        <h2>New distributor application received</h2>
+        
+        <div class="details">
+            <h3>Distributor Details:</h3>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Phone:</strong> {{ user.phone_number }}</p>
+            <p><strong>Business Name:</strong> {{ business_name }}</p>
+            <p><strong>GST Number:</strong> {{ gst_number }}</p>
+            <p><strong>PAN Number:</strong> {{ pan_number }}</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="{{ admin_url }}" class="button">Review in Admin Panel</a>
+        </div>
+    </div>
+</body>
+</html>

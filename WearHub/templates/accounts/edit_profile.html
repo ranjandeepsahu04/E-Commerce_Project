@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - WearHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Profile</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-4">
+                            <div class="position-relative d-inline-block">
+                                {% if user.profile.profile_picture %}
+                                    <img src="{{ user.profile.profile_picture.url }}" 
+                                         id="profilePreview"
+                                         class="rounded-circle img-fluid" 
+                                         style="width: 150px; height: 150px; object-fit: cover;"
+                                         alt="{{ user.username }}">
+                                {% else %}
+                                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                         id="profilePreview"
+                                         style="width: 150px; height: 150px;">
+                                        <i class="fas fa-user fa-4x text-white"></i>
+                                    </div>
+                                {% endif %}
+                                <label for="{{ form.profile_picture.id_for_label }}" 
+                                       class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-2" 
+                                       style="cursor: pointer;">
+                                    <i class="fas fa-camera text-white"></i>
+                                    <input type="file" name="profile_picture" 
+                                           id="{{ form.profile_picture.id_for_label }}"
+                                           class="d-none" 
+                                           accept="image/*"
+                                           onchange="previewImage(this)">
+                                </label>
+                            </div>
+                            <p class="text-muted small mt-2">Click the camera icon to change profile picture</p>
+                        </div>
+                        
+                        <!-- Personal Information -->
+                        <h5 class="mb-3">Personal Information</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" value="{{ user.first_name }}" readonly>
+                                <small class="text-muted">Contact admin to change name</small>
+                            </div>

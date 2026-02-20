@@ -1,0 +1,12 @@
+Django==4.2.7
+Pillow==10.1.0
+psycopg2-binary==2.9.9  # For PostgreSQL
+django-crispy-forms==2.1
+crispy-bootstrap5==0.7
+python-dotenv==1.0.0
+django-filter==23.5
+django-debug-toolbar==4.2
+django-allauth==0.57.0  # For social auth (optional)
+stripe==7.5.0  # For payment (optional)
+celery==5.3.4  # For async emails (optional)
+redis==5.0.1  # For caching (optional)

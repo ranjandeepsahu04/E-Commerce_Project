@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load product_extras %}
+
+{% block title %}Products - WearHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{% url 'products:product_list' %}" id="filter-form">
+                        <!-- Categories -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">Categories</h6>
+                            <div class="list-group">
+                                <a href="{% url 'products:product_list' %}?{% url_replace category='' %}" 
+                                    class="list-group-item list-group-item-action {% if not current_category %}active{% endif %}">
+                                    All Products
+                                </a>
+                                {% for category in categories %}
+                                    <a href="?{% url_replace category=category.slug %}" 
+                                        class="list-group-item list-group-item-action {% if current_category == category.slug %}active{% endif %}">
+                                        {{ category.get_name_display }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Price Range -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">Price Range</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="number" name="min_price" class="form-control form-control-sm" 
+                                           placeholder="Min" value="{{ request.GET.min_price }}">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" name="max_price" class="form-control form-control-sm" 
+                                           placeholder="Max" value="{{ request.GET.max_price }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sort By -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">Sort By</h6>
+                            <select name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="-created_at" {% if request.GET.sort == '-created_at' %}selected{% endif %}>Newest</option>
+                                <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Price: Low to High</option>
+                                <option value="-price" {% if request.GET.sort == '-price' %}selected{% endif %}>Price: High to Low</option>
+                                <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Name: A to Z</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Search Query (Hidden) -->
+                        {% if query %}
+                            <input type="hidden" name="q" value="{{ query }}">
+                        {% endif %}
+                        
+                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                        <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary w-100 mt-2">Clear Filters</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <!-- Search Header -->
+            {% if query %}
+                <div class="alert alert-info mb-4">
+                    Search results for: <strong>"{{ query }}"</strong>
+                    <a href="{% url 'products:product_list' %}" class="float-end text-decoration-none">Clear</a>
+                </div>
+            {% endif %}
+            
+            <!-- Products Count -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <p class="mb-0">Showing {{ products.start_index }} - {{ products.end_index }} of {{ products.paginator.count }} products</p>
+            </div>
+            
+            <!-- Products Grid -->
+            {% if products %}
+                <div class="row g-4">
+                    {% for product in products %}
+                        <div class="col-md-6 col-lg-4">
+                            {% include 'includes/product_card.html' with product=product %}
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination -->
+                {% if products.paginator.num_pages > 1 %}
+                    <nav aria-label="Page navigation" class="mt-5">
+                        <ul class="pagination justify-content-center">
+                            {% if products.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% url_replace page=products.previous_page_number %}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for i in products.paginator.page_range %}
+                                {% if products.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                                {% elif i > products.number|add:'-3' and i < products.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?{% url_replace page=i %}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if products.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% url_replace page=products.next_page_number %}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                    <h4>No Products Found</h4>
+                    <p class="text-muted">Try adjusting your search or filter criteria.</p>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary">Clear Filters</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-submit on price range change (with debounce)
+let timer;
+document.querySelectorAll('input[name="min_price"], input[name="max_price"]').forEach(input => {
+    input.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            document.getElementById('filter-form').submit();
+        }, 1000);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Product - {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Product: {{ product.name }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Basic Information -->
+                        <h5 class="mb-3">Basic Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">Product Name *</label>
+                                <input type="text" name="name" class="form-control" 
+                                       id="{{ form.name.id_for_label }}" 
+                                       value="{{ form.name.value|default:'' }}" required>
+                                {% if form.name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">Category *</label>
+                                <select name="category" class="form-control" id="{{ form.category.id_for_label }}" required>
+                                    <option value="">Select Category</option>
+                                    {% for category in form.category.field.queryset %}
+                                        <option value="{{ category.id }}" {% if form.category.value == category.id %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.category.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.category.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                            <textarea name="description" class="form-control" 
+                                      id="{{ form.description.id_for_label }}" 
+                                      rows="5" required>{{ form.description.value|default:'' }}</textarea>
+                            {% if form.description.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Pricing -->
+                        <h5 class="mb-3 mt-4">Pricing & Stock</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.price.id_for_label }}" class="form-label">Price (₹) *</label>
+                                <input type="number" name="price" class="form-control" 
+                                       id="{{ form.price.id_for_label }}" 
+                                       value="{{ form.price.value|default:'' }}" step="0.01" required>
+                                {% if form.price.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.price.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.discount_price.id_for_label }}" class="form-label">Discount Price (Optional)</label>
+                                <input type="number" name="discount_price" class="form-control" 
+                                       id="{{ form.discount_price.id_for_label }}" 
+                                       value="{{ form.discount_price.value|default:'' }}" step="0.01">
+                                {% if form.discount_price.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.discount_price.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.stock.id_for_label }}" class="form-label">Stock Quantity *</label>
+                                <input type="number" name="stock" class="form-control" 
+                                       id="{{ form.stock.id_for_label }}" 
+                                       value="{{ form.stock.value|default:'' }}" required>
+                                {% if form.stock.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.stock.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Product Details -->
+                        <h5 class="mb-3 mt-4">Product Details</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.brand.id_for_label }}" class="form-label">Brand</label>
+                                <input type="text" name="brand" class="form-control" 
+                                       id="{{ form.brand.id_for_label }}" 
+                                       value="{{ form.brand.value|default:'' }}">
+                                {% if form.brand.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.brand.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" name="is_featured" class="form-check-input" 
+                                           id="{{ form.is_featured.id_for_label }}"
+                                           {% if form.is_featured.value %}checked{% endif %}>
+                                    <label class="form-check-label" for="{{ form.is_featured.id_for_label }}">
+                                        Feature this product
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Current Images -->
+                        {% if product.images.all %}
+                            <h5 class="mb-3 mt-4">Current Images</h5>
+                            <div class="row g-2 mb-4">
+                                {% for image in product.images.all %}
+                                    <div class="col-md-2">
+                                        <div class="position-relative">
+                                            <img src="{{ image.image.url }}" 
+                                                 class="img-fluid rounded" 
+                                                 style="height: 80px; width: 100%; object-fit: cover;">
+                                            {% if image.is_main %}
+                                                <span class="position-absolute top-0 start-0 bg-primary text-white px-1 small">Main</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Submit Buttons -->
+                        <hr class="my-4">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Product
+                            </button>
+                            <a href="{% url 'products:distributor_dashboard' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

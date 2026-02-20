@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Distributor Account Approved - WearHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #27ae60; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .button { display: inline-block; padding: 12px 24px; background: #27ae60; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Account Approved! 🎉</h1>
+    </div>
+    <div class="content">
+        <h2>Congratulations {{ user.username }}!</h2>
+        <p>Your distributor account has been approved. You can now start selling on WearHub.</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ site_url }}{% url 'products:distributor_dashboard' %}" class="button">
+                Go to Distributor Dashboard
+            </a>
+        </div>
+        
+        <p>What you can do now:</p>
+        <ul>
+            <li>Add and manage your products</li>
+            <li>Track orders and sales</li>
+            <li>Manage inventory</li>
+            <li>Access distributor analytics</li>
+        </ul>
+        
+        <p>Welcome aboard! 🚀</p>
+    </div>
+</body>
+</html>

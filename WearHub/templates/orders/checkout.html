@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - WearHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-5 mb-4">Checkout</h1>
+    
+    <!-- Checkout Progress -->
+    <div class="checkout-progress mb-5">
+        <div class="progress-step completed">1</div>
+        <div class="progress-step active">2</div>
+        <div class="progress-step">3</div>
+        <div class="progress-step">4</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Shipping Address Form -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Shipping Address</h5>
+                </div>
+                <div class="card-body">
+                    <form id="checkout-form" method="POST" action="{% url 'orders:checkout' %}">
+                        {% csrf_token %}
+                        
+                        <!-- Display non-field errors -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name *</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name *</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Email *</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger small">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number *</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger small">{{ form.phone.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.address_line1.id_for_label }}" class="form-label">Address Line 1 *</label>
+                            {{ form.address_line1 }}
+                            {% if form.address_line1.errors %}
+                                <div class="text-danger small">{{ form.address_line1.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.address_line2.id_for_label }}" class="form-label">Address Line 2</label>
+                            {{ form.address_line2 }}
+                            {% if form.address_line2.errors %}
+                                <div class="text-danger small">{{ form.address_line2.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.city.id_for_label }}" class="form-label">City *</label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="text-danger small">{{ form.city.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.state.id_for_label }}" class="form-label">State *</label>
+                                {{ form.state }}
+                                {% if form.state.errors %}
+                                    <div class="text-danger small">{{ form.state.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.pincode.id_for_label }}" class="form-label">Pincode *</label>
+                                {{ form.pincode }}
+                                {% if form.pincode.errors %}
+                                    <div class="text-danger small">{{ form.pincode.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.country.id_for_label }}" class="form-label">Country *</label>
+                            {{ form.country }}
+                            {% if form.country.errors %}
+                                <div class="text-danger small">{{ form.country.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            {{ form.save_address }}
+                            <label class="form-check-label" for="{{ form.save_address.id_for_label }}">
+                                Save this address for future orders
+                            </label>
+                        </div>
+                        
+                        <!-- Payment Method -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Payment Method</h5>
+                            {% for radio in form.payment_method %}
+                                <div class="form-check">
+                                    {{ radio.tag }}
+                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                        {{ radio.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                            {% if form.payment_method.errors %}
+                                <div class="text-danger small">{{ form.payment_method.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Coupon Code -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Have a Coupon?</h5>
+                            <div class="input-group">
+                                {{ form.coupon_code }}
+                                <button type="button" class="btn btn-outline-primary" id="apply-coupon">Apply</button>
+                            </div>
+                            {% if form.coupon_code.errors %}
+                                <div class="text-danger small">{{ form.coupon_code.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">Order Notes (Optional)</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger small">{{ form.notes.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-3" id="place-order-btn">
+                            <i class="fas fa-credit-card me-2"></i>Place Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in cart_items %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ item.product.name|truncatechars:30 }} x {{ item.quantity }}</span>
+                        <span class="fw-bold">₹{{ item.get_cost|floatformat:2 }}</span>
+                    </div>
+                    {% endfor %}
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span class="fw-bold">₹{{ totals.subtotal|floatformat:2 }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span class="fw-bold">
+                            {% if totals.shipping > 0 %}
+                                ₹{{ totals.shipping|floatformat:2 }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax (GST 18%)</span>
+                        <span class="fw-bold">₹{{ totals.tax|floatformat:2 }}</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="h5">Total</span>
+                        <span class="h5 text-primary">₹{{ totals.total|floatformat:2 }}</span>
+                    </div>
+                    
+                    <!-- Secure Checkout Note -->
+                    <div class="alert alert-info small">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Your information is secure and encrypted
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.checkout-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.checkout-progress::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #dee2e6;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    background: #fff;
+    border: 2px solid #dee2e6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    font-weight: bold;
+}
+
+.progress-step.active {
+    border-color: #667eea;
+    background: #667eea;
+    color: white;
+}
+
+.progress-step.completed {
+    border-color: #28a745;
+    background: #28a745;
+    color: white;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('place-order-btn')?.addEventListener('click', function(e) {
+    if (!confirm('Are you sure you want to place this order?')) {
+        e.preventDefault();
+    }
+});
+
+// Coupon application (you can implement AJAX later)
+document.getElementById('apply-coupon')?.addEventListener('click', function() {
+    alert('Coupon functionality will be implemented with AJAX');
+});
+</script>
+{% endblock %}

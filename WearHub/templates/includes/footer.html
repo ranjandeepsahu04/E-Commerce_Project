@@ -1,0 +1,117 @@
+<!-- Footer -->
+<footer class="bg-dark text-white pt-5 pb-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <!-- About Section -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h5 class="text-uppercase mb-4">
+                    <i class="fas fa-tshirt me-2"></i>WearHub
+                </h5>
+                <p class="text-white-50">
+                    Your premier destination for fashionable clothing. We offer quality products for men, women, and kids at affordable prices.
+                </p>
+                <div class="mt-4">
+                    <a href="#" class="text-white-50 me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+                    <a href="#" class="text-white-50 me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="text-white-50 me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white-50 me-3"><i class="fab fa-pinterest fa-lg"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="text-uppercase mb-4">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="{% url 'core:home' %}" class="text-white-50 text-decoration-none">
+                            <i class="fas fa-chevron-right me-2 small"></i>Home
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'products:product_list' %}" class="text-white-50 text-decoration-none">
+                            <i class="fas fa-chevron-right me-2 small"></i>Products
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'core:about' %}" class="text-white-50 text-decoration-none">
+                            <i class="fas fa-chevron-right me-2 small"></i>About Us
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'core:contact' %}" class="text-white-50 text-decoration-none">
+                            <i class="fas fa-chevron-right me-2 small"></i>Contact
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Categories -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="text-uppercase mb-4">Categories</h5>
+                <ul class="list-unstyled">
+                    {% if categories %}
+                        {% for category in categories|slice:":4" %}
+                            <li class="mb-2">
+                                <a href="{% url 'products:product_list' %}?category={{ category.slug }}" class="text-white-50 text-decoration-none">
+                                    <i class="fas fa-chevron-right me-2 small"></i>{{ category.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="mb-2">
+                            <a href="{% url 'products:product_list' %}?category=men" class="text-white-50 text-decoration-none">
+                                <i class="fas fa-chevron-right me-2 small"></i>Men's Wear
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'products:product_list' %}?category=women" class="text-white-50 text-decoration-none">
+                                <i class="fas fa-chevron-right me-2 small"></i>Women's Wear
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'products:product_list' %}?category=kids" class="text-white-50 text-decoration-none">
+                                <i class="fas fa-chevron-right me-2 small"></i>Kids' Wear
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="text-uppercase mb-4">Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <span class="text-white-50">123 Fashion Street, Mumbai - 400001</span>
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-phone me-2"></i>
+                        <span class="text-white-50">+91 9348145818</span>
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-envelope me-2"></i>
+                        <span class="text-white-50">sdeepranjan01@gmail.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <hr class="bg-secondary">
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="mb-0 text-white-50">
+                        &copy; {% now "Y" %} WearHub. All rights reserved.
+                    </p>
+                    <div>
+                        <img src="https://via.placeholder.com/40x25?text=Visa" class="me-2" alt="Visa">
+                        <img src="https://via.placeholder.com/40x25?text=Master" class="me-2" alt="Mastercard">
+                        <img src="https://via.placeholder.com/40x25?text=UPI" alt="UPI">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

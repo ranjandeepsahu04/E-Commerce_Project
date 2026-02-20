@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Address - WearHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Address</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Address Type -->
+                        <div class="mb-3">
+                            <label for="{{ form.address_type.id_for_label }}" class="form-label">
+                                <i class="fas fa-tag me-2"></i>Address Type *
+                            </label>
+                            <select name="address_type" class="form-control" id="{{ form.address_type.id_for_label }}" required>
+                                <option value="home" {% if form.address_type.value == 'home' %}selected{% endif %}>Home</option>
+                                <option value="work" {% if form.address_type.value == 'work' %}selected{% endif %}>Work</option>
+                                <option value="other" {% if form.address_type.value == 'other' %}selected{% endif %}>Other</option>
+                            </select>
+                            {% if form.address_type.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.address_type.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label for="{{ form.full_name.id_for_label }}" class="form-label">
+                                <i class="fas fa-user me-2"></i>Full Name *
+                            </label>
+                            <input type="text" name="full_name" class="form-control" 
+                                   id="{{ form.full_name.id_for_label }}" 
+                                   value="{{ form.full_name.value|default:'' }}"
+                                   placeholder="Enter recipient's full name" required>
+                            {% if form.full_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.full_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                <i class="fas fa-phone me-2"></i>Phone Number *
+                            </label>
+                            <input type="tel" name="phone" class="form-control" 
+                                   id="{{ form.phone.id_for_label }}" 
+                                   value="{{ form.phone.value|default:'' }}"
+                                   placeholder="Enter 10-digit mobile number" required>
+                            {% if form.phone.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.phone.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Address Line 1 -->
+                        <div class="mb-3">
+                            <label for="{{ form.address_line1.id_for_label }}" class="form-label">
+                                <i class="fas fa-map-pin me-2"></i>Address Line 1 *
+                            </label>
+                            <input type="text" name="address_line1" class="form-control" 
+                                   id="{{ form.address_line1.id_for_label }}" 
+                                   value="{{ form.address_line1.value|default:'' }}"
+                                   placeholder="House number, street name" required>
+                            {% if form.address_line1.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.address_line1.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Address Line 2 -->
+                        <div class="mb-3">
+                            <label for="{{ form.address_line2.id_for_label }}" class="form-label">
+                                <i class="fas fa-map-pin me-2"></i>Address Line 2
+                            </label>
+                            <input type="text" name="address_line2" class="form-control" 
+                                   id="{{ form.address_line2.id_for_label }}" 
+                                   value="{{ form.address_line2.value|default:'' }}"
+                                   placeholder="Apartment, suite, unit (optional)">
+                            {% if form.address_line2.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.address_line2.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Landmark -->
+                        <div class="mb-3">
+                            <label for="{{ form.landmark.id_for_label }}" class="form-label">
+                                <i class="fas fa-landmark me-2"></i>Landmark
+                            </label>
+                            <input type="text" name="landmark" class="form-control" 
+                                   id="{{ form.landmark.id_for_label }}" 
+                                   value="{{ form.landmark.value|default:'' }}"
+                                   placeholder="Nearby landmark (optional)">
+                            {% if form.landmark.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.landmark.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- City, State, Pincode Row -->
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.city.id_for_label }}" class="form-label">City *</label>
+                                <input type="text" name="city" class="form-control" 
+                                       id="{{ form.city.id_for_label }}" 
+                                       value="{{ form.city.value|default:'' }}"
+                                       placeholder="City" required>
+                                {% if form.city.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.city.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.state.id_for_label }}" class="form-label">State *</label>
+                                <input type="text" name="state" class="form-control" 
+                                       id="{{ form.state.id_for_label }}" 
+                                       value="{{ form.state.value|default:'' }}"
+                                       placeholder="State" required>
+                                {% if form.state.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.state.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.pincode.id_for_label }}" class="form-label">Pincode *</label>
+                                <input type="text" name="pincode" class="form-control" 
+                                       id="{{ form.pincode.id_for_label }}" 
+                                       value="{{ form.pincode.value|default:'' }}"
+                                       placeholder="Pincode" required>
+                                {% if form.pincode.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.pincode.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Country -->
+                        <div class="mb-3">
+                            <label for="{{ form.country.id_for_label }}" class="form-label">
+                                <i class="fas fa-globe me-2"></i>Country *
+                            </label>
+                            <input type="text" name="country" class="form-control" 
+                                   id="{{ form.country.id_for_label }}" 
+                                   value="{{ form.country.value|default:'India' }}"
+                                   required>
+                            {% if form.country.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.country.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Is Default -->
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" name="is_default" 
+                                   id="{{ form.is_default.id_for_label }}"
+                                   {% if form.is_default.value %}checked{% endif %}>
+                            <label class="form-check-label" for="{{ form.is_default.id_for_label }}">
+                                Set as default address
+                            </label>
+                        </div>
+                        
+                        <!-- Form Actions -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Address
+                            </button>
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

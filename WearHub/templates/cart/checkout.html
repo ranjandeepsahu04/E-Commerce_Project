@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - WearHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-5 mb-4">Checkout</h1>
+    
+    <!-- Checkout Progress -->
+    <div class="checkout-progress mb-5">
+        <div class="progress-step completed">1</div>
+        <div class="progress-step active">2</div>
+        <div class="progress-step">3</div>
+        <div class="progress-step">4</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Shipping Address Form -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Shipping Address</h5>
+                </div>
+                <div class="card-body">
+                    <form id="checkout-form" method="POST" action="{% url 'orders:checkout' %}">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">First Name *</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" 
+                                       value="{{ user.first_name }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" 
+                                       value="{{ user.last_name }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ user.email }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   value="{{ user.phone_number }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address_line1" class="form-label">Address Line 1 *</label>
+                            <input type="text" class="form-control" id="address_line1" name="address_line1" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address_line2" class="form-label">Address Line 2</label>
+                            <input type="text" class="form-control" id="address_line2" name="address_line2">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="city" class="form-label">City *</label>
+                                <input type="text" class="form-control" id="city" name="city" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="state" class="form-label">State *</label>
+                                <input type="text" class="form-control" id="state" name="state" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="pincode" class="form-label">Pincode *</label>
+                                <input type="text" class="form-control" id="pincode" name="pincode" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="country" class="form-label">Country *</label>
+                            <select class="form-control" id="country" name="country" required>
+                                <option value="">Select Country</option>
+                                <option value="India" selected>India</option>
+                                <option value="USA">United States</option>
+                                <option value="UK">United Kingdom</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="save_address" name="save_address">
+                            <label class="form-check-label" for="save_address">Save this address for future orders</label>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Order Notes (Optional)</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                      placeholder="Special instructions for delivery"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-3">
+                            <i class="fas fa-credit-card me-2"></i>Proceed to Payment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in cart_items %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ item.product.name|truncatechars:30 }} x {{ item.quantity }}</span>
+                        <span class="fw-bold">₹{{ item.get_cost }}</span>
+                    </div>
+                    {% endfor %}
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span class="fw-bold">₹{{ totals.subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span class="fw-bold">
+                            {% if totals.shipping > 0 %}
+                                ₹{{ totals.shipping }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax (GST 18%)</span>
+                        <span class="fw-bold">₹{{ totals.tax }}</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="h5">Total</span>
+                        <span class="h5 text-primary">₹{{ totals.total }}</span>
+                    </div>
+                    
+                    <!-- Secure Checkout Note -->
+                    <div class="alert alert-info small">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Your information is secure and encrypted
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.checkout-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.checkout-progress::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #dee2e6;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    background: #fff;
+    border: 2px solid #dee2e6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    font-weight: bold;
+}
+
+.progress-step.active {
+    border-color: #667eea;
+    background: #667eea;
+    color: white;
+}
+
+.progress-step.completed {
+    border-color: #28a745;
+    background: #28a745;
+    color: white;
+}
+</style>
+{% endblock %}
